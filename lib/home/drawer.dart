@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_ui_kit/blocks/auth_block.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/auth_provider.dart';
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -32,7 +36,8 @@ class _AppDrawerState extends State<AppDrawer> {
             shrinkWrap: true,
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.home, color: Theme.of(context).colorScheme.secondary),
+                leading: Icon(Icons.home,
+                    color: Theme.of(context).colorScheme.secondary),
                 title: Text('Home'),
                 onTap: () {
                   Navigator.pop(context);
@@ -50,8 +55,8 @@ class _AppDrawerState extends State<AppDrawer> {
                 },
               ),
               ListTile(
-                leading:
-                    Icon(Icons.category, color: Theme.of(context).colorScheme.secondary),
+                leading: Icon(Icons.category,
+                    color: Theme.of(context).colorScheme.secondary),
                 title: Text('Categorise'),
                 onTap: () {
                   Navigator.pop(context);
@@ -59,8 +64,8 @@ class _AppDrawerState extends State<AppDrawer> {
                 },
               ),
               ListTile(
-                leading:
-                    Icon(Icons.favorite, color: Theme.of(context).colorScheme.secondary),
+                leading: Icon(Icons.favorite,
+                    color: Theme.of(context).colorScheme.secondary),
                 title: Text('My Wishlist'),
                 trailing: Container(
                   padding: const EdgeInsets.all(10.0),
@@ -94,18 +99,10 @@ class _AppDrawerState extends State<AppDrawer> {
                   Navigator.pushNamed(context, '/cart');
                 },
               ),
-              ListTile(
-                leading: Icon(Icons.lock, color: Theme.of(context).colorScheme.secondary),
-                title: Text('Login'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/auth');
-                },
-              ),
               Divider(),
               ListTile(
-                leading:
-                    Icon(Icons.settings, color: Theme.of(context).colorScheme.secondary),
+                leading: Icon(Icons.settings,
+                    color: Theme.of(context).colorScheme.secondary),
                 title: Text('Settings'),
                 onTap: () {
                   Navigator.pop(context);
@@ -117,7 +114,9 @@ class _AppDrawerState extends State<AppDrawer> {
                     color: Theme.of(context).colorScheme.secondary),
                 title: Text('Logout'),
                 onTap: () async {
-                  await auth.logout();
+                  //await auth.logout();
+                  await context.read<AuthProvider>().signOut();
+                  log('logout');
                 },
               )
             ],

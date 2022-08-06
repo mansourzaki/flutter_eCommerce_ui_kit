@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_ui_kit/blocks/auth_block.dart';
 import 'package:flutter_ecommerce_ui_kit/models/user.dart';
 import 'package:provider/provider.dart';
+
+import '../helper/auth_helper.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -125,13 +129,15 @@ class _SignUpState extends State<SignUp> {
                                 'Sign Up',
                                 style: TextStyle(color: Colors.white),
                               ),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate() &&
-                              !auth.loading) {
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save();
                             // If the form is valid, display a snackbar. In the real world,
                             // you'd often call a server or save the information in a database.
-                            auth.register(user);
+                            await AuthHelper.authHelper
+                                .signUp(user.email, user.password);
+                            
+                            //auth.register(user);
                           }
                         },
                       );

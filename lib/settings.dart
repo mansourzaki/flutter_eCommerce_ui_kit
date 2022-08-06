@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_ecommerce_ui_kit/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 class Settings extends StatefulWidget {
   @override
   _SettingsState createState() => _SettingsState();
@@ -118,6 +121,10 @@ class _SettingsState extends State<Settings> {
                         ),
                         Card(
                           child: ListTile(
+                            onTap: (){
+                              // context.read<AuthProvider>().signOut();
+                              // log('logout');
+                            },
                             leading: Icon(Icons.lock, color: Theme.of(context).colorScheme.secondary, size: 28,),
                             title: Text('Logout', style: TextStyle(color: Colors.black, fontSize: 17)),
                             trailing: Icon(Icons.keyboard_arrow_right, color: Theme.of(context).colorScheme.secondary),

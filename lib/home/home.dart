@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_ui_kit/localizations.dart';
+import 'package:flutter_ecommerce_ui_kit/providers/auth_provider.dart';
+import 'package:flutter_ecommerce_ui_kit/providers/firestore_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'drawer.dart';
 import 'slider.dart';
@@ -39,8 +44,12 @@ class _HomeState extends State<Home> {
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.shopping_cart),
-                    onPressed: () {},
-                  )
+                    onPressed: () async{
+                      await context.read<FireStoreProvider>().addCategory();
+                      log('add');
+
+                    },
+                  ),
                 ],
                 // Allows the user to reveal the app bar if they begin scrolling
                 // back up the list of items.
@@ -63,7 +72,8 @@ class _HomeState extends State<Home> {
                             EdgeInsets.only(top: 14.0, left: 8.0, right: 8.0),
                         child: Text(
                             AppLocalizations.of(context)!
-                                .translate('NEW_ARRIVALS') ?? '',
+                                    .translate('NEW_ARRIVALS') ??
+                                '',
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary,
                                 fontSize: 18,
@@ -116,7 +126,8 @@ class _HomeState extends State<Home> {
                                             subtitle: Text('\$200',
                                                 style: TextStyle(
                                                     color: Theme.of(context)
-                                                        .colorScheme.secondary,
+                                                        .colorScheme
+                                                        .secondary,
                                                     fontWeight:
                                                         FontWeight.w700)),
                                           )
@@ -148,7 +159,8 @@ class _HomeState extends State<Home> {
                                 top: 8.0, left: 8.0, right: 8.0),
                             child: Text('Shop By Category',
                                 style: TextStyle(
-                                    color: Theme.of(context).colorScheme.secondary,
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700)),
                           ),
@@ -157,8 +169,7 @@ class _HomeState extends State<Home> {
                                 right: 8.0, top: 8.0, left: 8.0),
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    primary: Theme.of(context).primaryColor
-                                ),
+                                    primary: Theme.of(context).primaryColor),
                                 child: Text('View All',
                                     style: TextStyle(color: Colors.white)),
                                 onPressed: () {
