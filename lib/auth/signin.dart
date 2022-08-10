@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ecommerce_ui_kit/auth/signup.dart';
 import 'package:flutter_ecommerce_ui_kit/blocks/auth_block.dart';
 import 'package:flutter_ecommerce_ui_kit/helper/auth_helper.dart';
 import 'package:flutter_ecommerce_ui_kit/home/home.dart';
@@ -98,17 +99,22 @@ class _SignInState extends State<SignIn> {
                                 // Update values
                                 _formKey.currentState!.save();
                                 // Hit Api
-                                Provider.of<AuthProvider>(context, listen: false)
+                                Provider.of<AuthProvider>(context,
+                                        listen: false)
                                     .logIn(userCredential.usernameOrEmail,
                                         userCredential.password);
-                                
                               }
                             },
                           );
                         },
                       ),
                     ),
-                  )
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        AppRouter.NavigateToWidget(SignUp());
+                      },
+                      child: Text('SignUp'))
                 ],
               ),
             ),

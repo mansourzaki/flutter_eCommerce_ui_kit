@@ -1,6 +1,12 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_ui_kit/helper/auth_helper.dart';
+import 'package:flutter_ecommerce_ui_kit/helper/firestore_helper.dart';
+import 'package:flutter_ecommerce_ui_kit/helper/storage_helper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:string_validator/string_validator.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -22,7 +28,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   logIn(String emailAddress, String password) async {
-   AuthHelper.authHelper.signIn(emailAddress,password);
+    AuthHelper.authHelper.signIn(emailAddress, password);
 
     notifyListeners();
   }
@@ -32,7 +38,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  getUserState(){
+  getUserState() {
     user = AuthHelper.authHelper.getUserState();
     notifyListeners();
   }
@@ -41,7 +47,21 @@ class AuthProvider with ChangeNotifier {
     AuthHelper.authHelper.checkUser();
   }
 
-  signUp(String emailAddress, String password) async {
-    AuthHelper.authHelper.signUp(emailAddress, password);
+  signUp(String emailAddress, String password, String userName) async {
+    UserCredential? user =
+        await AuthHelper.authHelper.signUp(emailAddress, password);
+
+    print(user);
+    if (user != null) {
+      print('in != null');
+      await FirestoreHelper.firestoreHelper
+          .addNewUserToFirestore(userName, emailAddress, user.user!.uid);
+    }
+  }
+
+  Future<String> uploadImage() async {
+    XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    String x = await StorageHelper.storageHelper.uploadImage(File(xFile!.path));
+    return x;
   }
 }

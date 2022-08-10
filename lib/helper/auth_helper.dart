@@ -26,6 +26,7 @@ class AuthHelper {
   signOut() {
     auth.signOut();
     AppRouter.NavigateWithReplacemtnToWidget(SignIn());
+    
   }
 
   checkUser() async {
@@ -42,21 +43,29 @@ class AuthHelper {
     return user;
   }
 
-  signUp(String emailAddress, String password) async {
+  Future<UserCredential?> signUp(String emailAddress, String password) async {
     try {
-      final credential =
+      UserCredential credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailAddress,
         password: password,
       );
+      
+      return credential;
+    
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
       }
+      return null;
+   
     } catch (e) {
       print(e);
+      return null;
     }
   }
+
+  
 }

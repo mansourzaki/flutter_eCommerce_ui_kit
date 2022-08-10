@@ -45,7 +45,7 @@ class _HomeState extends State<Home> {
                   IconButton(
                     icon: Icon(Icons.shopping_cart),
                     onPressed: () async{
-                      await context.read<FireStoreProvider>().addCategory();
+                   //   await context.read<FireStoreProvider>().addCategory();
                       log('add');
 
                     },

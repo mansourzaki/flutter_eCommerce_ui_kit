@@ -49,7 +49,7 @@ void main() async {
             .copyWith(secondary: Colors.lightBlue.shade900),
         fontFamily: locale.languageCode == 'ar' ? 'Dubai' : 'Lato',
       ),
-      // initialRoute: '/',
+      initialRoute: '/',
       onGenerateRoute: (RouteSettings routeSettings) {
         String? name = routeSettings.name;
         dynamic arguments = routeSettings.arguments;

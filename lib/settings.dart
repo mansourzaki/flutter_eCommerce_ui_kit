@@ -122,7 +122,7 @@ class _SettingsState extends State<Settings> {
                         Card(
                           child: ListTile(
                             onTap: (){
-                              // context.read<AuthProvider>().signOut();
+                              context.read<AuthProvider>().signOut();
                               // log('logout');
                             },
                             leading: Icon(Icons.lock, color: Theme.of(context).colorScheme.secondary, size: 28,),

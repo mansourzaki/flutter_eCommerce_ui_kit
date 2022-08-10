@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_ui_kit/blocks/auth_block.dart';
+import 'package:flutter_ecommerce_ui_kit/helper/auth_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
@@ -12,25 +13,31 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
+  String url = '';
   @override
   Widget build(BuildContext context) {
     AuthBlock auth = Provider.of<AuthBlock>(context);
     return Column(
       children: <Widget>[
-        if (auth.isLoggedIn)
-          UserAccountsDrawerHeader(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-              fit: BoxFit.cover,
-              image: AssetImage('assets/images/drawer-header.jpg'),
-            )),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: NetworkImage(
-                  'https://avatars2.githubusercontent.com/u/2400215?s=120&v=4'),
+        UserAccountsDrawerHeader(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage('assets/images/drawer-header.jpg'),
+          )),
+          currentAccountPicture: GestureDetector(
+            onTap: () async {
+              url = await context.read<AuthProvider>().uploadImage();
+            },
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(url != ''
+                  ? 'https://avatars2.githubusercontent.com/u/2400215?s=120&v=4'
+                  : url),
             ),
-            accountEmail: Text(auth.user['user_email']),
-            accountName: Text(auth.user['user_display_name']),
           ),
+          accountEmail: Text(AuthHelper.authHelper.auth.currentUser!.email!),
+          accountName: Text('ss'),
+        ),
         Expanded(
           child: ListView(
             shrinkWrap: true,
@@ -115,7 +122,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 title: Text('Logout'),
                 onTap: () async {
                   //await auth.logout();
-                  await context.read<AuthProvider>().signOut();
+                  context.read<AuthProvider>().signOut();
                   log('logout');
                 },
               )
