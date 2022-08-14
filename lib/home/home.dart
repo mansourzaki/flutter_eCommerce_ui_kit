@@ -1,10 +1,16 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ecommerce_ui_kit/helper/firestore_helper.dart';
 import 'package:flutter_ecommerce_ui_kit/localizations.dart';
+import 'package:flutter_ecommerce_ui_kit/models/category.dart';
 import 'package:flutter_ecommerce_ui_kit/providers/auth_provider.dart';
 import 'package:flutter_ecommerce_ui_kit/providers/firestore_provider.dart';
+import 'package:flutter_ecommerce_ui_kit/router.dart';
+import 'package:flutter_ecommerce_ui_kit/screens/all_categories.dart';
+import 'package:flutter_ecommerce_ui_kit/widgets/category_widget.dart';
 import 'package:provider/provider.dart';
 
 import 'drawer.dart';
@@ -24,6 +30,7 @@ class _HomeState extends State<Home> {
     'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,10 +51,10 @@ class _HomeState extends State<Home> {
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.shopping_cart),
-                    onPressed: () async{
-                   //   await context.read<FireStoreProvider>().addCategory();
+                    onPressed: () async {
+                      //await context.read<FireStoreProvider>().addCategory(Category(name: 'Laptops', imageUrl: 'https://media.wired.com/photos/5fb2cc575c9914713ead03de/master/w_1920,c_limit/Gear-Apple-MacBook-Air-top-down-SOURCE-Apple.jpg'));
+                      // await context.read<FireStoreProvider>().addProduct();
                       log('add');
-
                     },
                   ),
                 ],
@@ -173,61 +180,48 @@ class _HomeState extends State<Home> {
                                 child: Text('View All',
                                     style: TextStyle(color: Colors.white)),
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/categorise');
+                                  AppRouter.NavigateToWidget(
+                                      AllCategoriesScreen());
                                 }),
                           )
                         ],
                       ),
-                      Container(
-                        child: GridView.count(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          crossAxisCount: 2,
-                          padding: EdgeInsets.only(
-                              top: 8, left: 6, right: 6, bottom: 12),
-                          children: List.generate(4, (index) {
-                            return Container(
-                              child: Card(
-                                clipBehavior: Clip.antiAlias,
-                                child: InkWell(
-                                  onTap: () {
-                                    print('Card tapped.');
-                                  },
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      SizedBox(
-                                        height:
-                                            (MediaQuery.of(context).size.width /
-                                                    2) -
-                                                70,
-                                        width: double.infinity,
-                                        child: CachedNetworkImage(
-                                          fit: BoxFit.cover,
-                                          imageUrl: imgList[index],
-                                          placeholder: (context, url) => Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                          errorWidget: (context, url, error) =>
-                                              new Icon(Icons.error),
-                                        ),
+                      StreamBuilder(
+                          stream: FirestoreHelper
+                              .firestoreHelper.firestoreInstance
+                              .collection('Categories')
+                              .snapshots(),
+                          builder: (context,
+                                  AsyncSnapshot<QuerySnapshot> snapshots) =>
+                              snapshots.data == null
+                                  ? CircularProgressIndicator()
+                                  : Container(
+                                      child: GridView.builder(
+                                        itemCount: snapshots.data!.size <= 4
+                                            ? snapshots.data!.size
+                                            : 4,
+                                        itemBuilder: (context, i) {
+                                          return CategoryWidget(
+                                              category: Category(
+                                                  id: snapshots
+                                                      .data!.docs[i].id,
+                                                  name: snapshots.data!.docs[i]
+                                                      ['name'],
+                                                  imageUrl: snapshots.data!
+                                                      .docs[i]['imageUrl']));
+                                        },
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2),
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        padding: EdgeInsets.only(
+                                            top: 8,
+                                            left: 6,
+                                            right: 6,
+                                            bottom: 12),
                                       ),
-                                      ListTile(
-                                          title: Text(
-                                        'Two Gold Rings',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 16),
-                                      ))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
-                        ),
-                      ),
+                                    )),
                       Container(
                         child: Padding(
                           padding: EdgeInsets.only(

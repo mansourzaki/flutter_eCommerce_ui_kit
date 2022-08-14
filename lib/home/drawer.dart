@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_ui_kit/blocks/auth_block.dart';
 import 'package:flutter_ecommerce_ui_kit/helper/auth_helper.dart';
+import 'package:flutter_ecommerce_ui_kit/router.dart';
+import 'package:flutter_ecommerce_ui_kit/screens/add_category.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
@@ -48,6 +50,16 @@ class _AppDrawerState extends State<AppDrawer> {
                 title: Text('Home'),
                 onTap: () {
                   Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.add,
+                    color: Theme.of(context).colorScheme.secondary),
+                title: Text('Add new category'),
+                onTap: () {
+                  AppRouter.NavigateToWidget(AddCategory(
+                    isEditing: false,
+                  ));
                 },
               ),
               ListTile(
