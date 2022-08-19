@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_ui_kit/models/category.dart';
+import 'package:flutter_ecommerce_ui_kit/router.dart';
+import 'package:flutter_ecommerce_ui_kit/screens/edit_product_screen.dart';
+import 'package:flutter_ecommerce_ui_kit/screens/product_details.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +20,9 @@ class PProcuctWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          AppRouter.NavigateToWidget(Productdetails(product: product));
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -70,7 +75,12 @@ class PProcuctWidget extends StatelessWidget {
                           color: Theme.of(context).colorScheme.secondary,
                           fontWeight: FontWeight.w700)),
                   Spacer(),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.edit))
+                  IconButton(
+                      onPressed: () {
+                        AppRouter.NavigateToWidget(EditProductScreen(
+                            category: category, product: product));
+                      },
+                      icon: Icon(Icons.edit))
                 ],
               ),
             )

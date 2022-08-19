@@ -7,6 +7,7 @@ import 'package:flutter_ecommerce_ui_kit/router.dart';
 import 'package:flutter_ecommerce_ui_kit/screens/add_category.dart';
 import 'package:provider/provider.dart';
 
+import '../auth/signin.dart';
 import '../providers/auth_provider.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -18,7 +19,7 @@ class _AppDrawerState extends State<AppDrawer> {
   String url = '';
   @override
   Widget build(BuildContext context) {
-    AuthBlock auth = Provider.of<AuthBlock>(context);
+    // AuthBlock auth = Provider.of<AuthBlock>(context);
     return Column(
       children: <Widget>[
         UserAccountsDrawerHeader(
@@ -37,8 +38,12 @@ class _AppDrawerState extends State<AppDrawer> {
                   : url),
             ),
           ),
-          accountEmail: Text(AuthHelper.authHelper.auth.currentUser!.email!),
-          accountName: Text('ss'),
+          accountEmail: AuthHelper.authHelper.auth.currentUser == null
+              ? Text('')
+              : Text(AuthHelper.authHelper.auth.currentUser!.email!),
+          accountName: AuthHelper.authHelper.auth.currentUser == null
+              ? Text('Please login')
+              : Text('ss'),
         ),
         Expanded(
           child: ListView(
@@ -76,7 +81,7 @@ class _AppDrawerState extends State<AppDrawer> {
               ListTile(
                 leading: Icon(Icons.category,
                     color: Theme.of(context).colorScheme.secondary),
-                title: Text('Categorise'),
+                title: Text('Categories'),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/categorise');
@@ -128,16 +133,26 @@ class _AppDrawerState extends State<AppDrawer> {
                   Navigator.pushNamed(context, '/settings');
                 },
               ),
-              ListTile(
-                leading: Icon(Icons.exit_to_app,
-                    color: Theme.of(context).colorScheme.secondary),
-                title: Text('Logout'),
-                onTap: () async {
-                  //await auth.logout();
-                  context.read<AuthProvider>().signOut();
-                  log('logout');
-                },
-              )
+              AuthHelper.authHelper.auth.currentUser == null
+                  ? ListTile(
+                      leading: Icon(Icons.exit_to_app,
+                          color: Theme.of(context).colorScheme.secondary),
+                      title: Text('Login'),
+                      onTap: () async {
+                        //await auth.logout();
+                        AppRouter.NavigateToWidget(SignIn());
+                      },
+                    )
+                  : ListTile(
+                      leading: Icon(Icons.exit_to_app,
+                          color: Theme.of(context).colorScheme.secondary),
+                      title: Text('Logout'),
+                      onTap: () async {
+                        //await auth.logout();
+                        context.read<AuthProvider>().signOut();
+                        log('logout');
+                      },
+                    )
             ],
           ),
         )

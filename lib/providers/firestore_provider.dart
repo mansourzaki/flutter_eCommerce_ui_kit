@@ -8,8 +8,10 @@ import 'package:flutter_ecommerce_ui_kit/models/product.dart';
 class FireStoreProvider extends ChangeNotifier {
   List<Category>? categories;
   List<Product> products = [];
+  List<Product> allproducts = [];
   FireStoreProvider() {
     getAllCategory();
+    getProductsInEachCollection();
   }
   addCategory(Category category) async {
     Category newCat =
@@ -46,6 +48,7 @@ class FireStoreProvider extends ChangeNotifier {
   }
 
   getAllProductsFromCategory(String catId) async {
+    //List<Product> _products = [];?
     products = await FirestoreHelper.firestoreHelper.getAllProducts(catId);
     notifyListeners();
   }
@@ -54,6 +57,7 @@ class FireStoreProvider extends ChangeNotifier {
     Product newProd =
         await FirestoreHelper.firestoreHelper.addNewProduct(product, catId);
     products.add(newProd);
+    getProductsInEachCollection();
     notifyListeners();
   }
 
@@ -63,6 +67,15 @@ class FireStoreProvider extends ChangeNotifier {
     // getAllProducts();
     int x = products.indexWhere((element) => product.id == element.id);
     products[x] = product;
+    getProductsInEachCollection();
+    notifyListeners();
+  }
+
+  getProductsInEachCollection() async {
+    List<Product> _products = [];
+    _products = await FirestoreHelper.firestoreHelper.getEveryProduct();
+    allproducts = _products;
+    notifyListeners();
   }
 
   deletProduct(Product product, String catId) async {
@@ -71,6 +84,7 @@ class FireStoreProvider extends ChangeNotifier {
       (element) => element.id == product.id,
     );
     log('deleted');
+    getProductsInEachCollection();
     notifyListeners();
   }
 }

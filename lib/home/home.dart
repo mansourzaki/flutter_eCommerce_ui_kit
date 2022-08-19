@@ -13,6 +13,7 @@ import 'package:flutter_ecommerce_ui_kit/screens/all_categories.dart';
 import 'package:flutter_ecommerce_ui_kit/widgets/category_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/new_arrival.dart';
 import 'drawer.dart';
 import 'slider.dart';
 
@@ -30,9 +31,10 @@ class _HomeState extends State<Home> {
     'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
-  
+
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<FireStoreProvider>(context);
     return Scaffold(
       drawer: Drawer(
         child: AppDrawer(),
@@ -62,7 +64,10 @@ class _HomeState extends State<Home> {
                 // back up the list of items.
                 // floating: true,
                 // Display a placeholder widget to visualize the shrinking size.
-                flexibleSpace: HomeSlider(),
+                flexibleSpace:
+                    context.watch<FireStoreProvider>().allproducts.isEmpty
+                        ? Center(child: CircularProgressIndicator())
+                        : HomeSlider(),
                 // Make the initial height of the SliverAppBar larger than normal.
                 expandedHeight: 300,
               ),
@@ -89,64 +94,13 @@ class _HomeState extends State<Home> {
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 8.0),
                         height: 240.0,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: imgList.map((i) {
-                            return Builder(
-                              builder: (BuildContext context) {
-                                return Container(
-                                  width: 140.0,
-                                  child: Card(
-                                    clipBehavior: Clip.antiAlias,
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                            context, '/products',
-                                            arguments: i);
-                                      },
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          SizedBox(
-                                            height: 160,
-                                            child: Hero(
-                                              tag: '$i',
-                                              child: CachedNetworkImage(
-                                                fit: BoxFit.cover,
-                                                imageUrl: i,
-                                                placeholder: (context, url) =>
-                                                    Center(
-                                                        child:
-                                                            CircularProgressIndicator()),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        new Icon(Icons.error),
-                                              ),
-                                            ),
-                                          ),
-                                          ListTile(
-                                            title: Text(
-                                              'Two Gold Rings',
-                                              style: TextStyle(fontSize: 14),
-                                            ),
-                                            subtitle: Text('\$200',
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary,
-                                                    fontWeight:
-                                                        FontWeight.w700)),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          }).toList(),
-                        ),
+                        child: provider.allproducts.isEmpty
+                            ? Center()
+                            : ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: provider.allproducts.length,
+                                itemBuilder: (context, i) => NewArrival(
+                                    product: provider.allproducts[i])),
                       ),
                       Container(
                         child: Padding(

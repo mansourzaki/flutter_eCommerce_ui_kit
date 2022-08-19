@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_ecommerce_ui_kit/helper/firestore_helper.dart';
+import 'package:flutter_ecommerce_ui_kit/providers/firestore_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomeSlider extends StatefulWidget {
   @override
@@ -8,7 +13,6 @@ class HomeSlider extends StatefulWidget {
 }
 
 class _HomeSliderState extends State<HomeSlider> {
-
   final List<String> imgList = [
     'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
     'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
@@ -26,32 +30,32 @@ class _HomeSliderState extends State<HomeSlider> {
       child: Stack(
         children: <Widget>[
           Center(
-            child: CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                height: 350,
-                pauseAutoPlayOnTouch: true,
-                viewportFraction: 1.0
-              ),
-              items: imgList.map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          imageUrl: i,
-                          placeholder: (context, url) => Center(
-                              child: CircularProgressIndicator()
-                          ),
-                          errorWidget: (context, url, error) => new Icon(Icons.error),
-                        )
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-          ),
+              child: CarouselSlider(
+                  options: CarouselOptions(
+                      autoPlay: true,
+                      height: 350,
+                      pauseAutoPlayOnTouch: true,
+                      viewportFraction: 1.0),
+                  items: context.watch<FireStoreProvider>().allproducts == null
+                      ? [
+                          Center(
+                            child: Text('f'),
+                          )
+                        ]
+                      : context
+                          .watch<FireStoreProvider>()
+                          .allproducts
+                          .map((e) => Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                imageUrl: e.image,
+                                placeholder: (context, url) =>
+                                    Center(child: CircularProgressIndicator()),
+                                errorWidget: (context, url, error) =>
+                                    new Icon(Icons.error),
+                              )))
+                          .toList())),
         ],
       ),
     );

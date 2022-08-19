@@ -89,13 +89,33 @@ class FirestoreHelper {
     return products;
   }
 
-  updateProduct(Product product, String catId) {
-    firestoreInstance
+  updateProduct(Product product, String catId) async {
+    await firestoreInstance
         .collection(categoriesCollectionName)
         .doc(catId)
         .collection(productsCollectionName)
         .doc(product.id)
         .update(product.toMap());
+  }
+
+  Future<List<Product>> getEveryProduct() async {
+    List<Product> _products = [];
+    final ref =
+        await firestoreInstance.collection(categoriesCollectionName).get();
+    ref.docs.forEach((e) async {
+      final pros = await e.reference.collection(productsCollectionName).get();
+
+      pros.docs.map((e) async {
+        log(e.toString());
+        log('in helper');
+        Product product = Product.fromMap(e.data());
+        product.id = e.id;
+        _products.add(product);
+        return product;
+      }).toList();
+    });
+
+    return _products;
   }
 
   deleteProduct(Product product, String catId) {

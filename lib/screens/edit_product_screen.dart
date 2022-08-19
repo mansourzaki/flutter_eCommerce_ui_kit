@@ -13,15 +13,17 @@ import 'package:flutter_ecommerce_ui_kit/router.dart';
 import 'package:flutter_ecommerce_ui_kit/screens/all_categories.dart';
 import 'package:provider/provider.dart';
 
-class AddProductScreen extends StatefulWidget {
-  AddProductScreen({Key? key, required this.category}) : super(key: key);
+class EditProductScreen extends StatefulWidget {
+  EditProductScreen({Key? key, required this.category, required this.product})
+      : super(key: key);
+  final Product product;
   final Category? category;
 
   @override
-  State<AddProductScreen> createState() => _AddProductScreenState();
+  State<EditProductScreen> createState() => _EditProductScreenState();
 }
 
-class _AddProductScreenState extends State<AddProductScreen> {
+class _EditProductScreenState extends State<EditProductScreen> {
   String? url;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
@@ -30,9 +32,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
   bool isLoading = false;
 
   @override
+  void initState() {
+    url = widget.product.image;
+    nameController.text = widget.product.name;
+    descController.text = widget.product.description;
+    priceController.text = widget.product.price.toString();
+    qtyController.text = widget.product.quantity.toString();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Product')),
+      appBar: AppBar(title: Text('Edit Product')),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -117,18 +129,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
             ElevatedButton(
                 onPressed: () async {
                   Product prod = Product(
+                      id: widget.product.id,
                       name: nameController.text,
                       description: descController.text,
                       price: num.parse(priceController.text),
                       image: url!,
                       quantity: int.parse(priceController.text));
                   await Provider.of<FireStoreProvider>(context, listen: false)
-                      .addProduct(prod, widget.category!.id!);
-                      Navigator.of(context).pop();
+                      .updateProduct(prod, widget.category!.id!);
+                  Navigator.of(context).pop();
                   // AppRouter.NavigateWithReplacemtnToWidget(
                   //     AllCategoriesScreen());
                 },
-                child: Text('Add Product')),
+                child: Text('Update Product')),
             ElevatedButton(
                 onPressed: () {
                   url = null;
