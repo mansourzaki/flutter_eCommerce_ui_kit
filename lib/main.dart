@@ -4,6 +4,7 @@ import 'package:flutter_ecommerce_ui_kit/firebase_options.dart';
 import 'package:flutter_ecommerce_ui_kit/providers/auth_provider.dart';
 import 'package:flutter_ecommerce_ui_kit/providers/firestore_provider.dart';
 import 'package:flutter_ecommerce_ui_kit/router.dart';
+import 'package:flutter_ecommerce_ui_kit/screens/chats_screen.dart';
 import 'package:flutter_ecommerce_ui_kit/screens/first_screen.dart';
 import 'package:flutter_ecommerce_ui_kit/screens/splash_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -59,7 +60,7 @@ void main() async {
           });
         } else {
           return MaterialPageRoute(builder: (context) {
-            return Home();
+            return ChatScreen();
           });
         }
       },
